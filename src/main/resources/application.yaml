@@ -7,6 +7,7 @@ management:
 youtube:
   v3:
     api:
+      key: AIzaSyDoJ5rO0qSWZd4ehdFXU-_2SGIDdO3fvA0
       urls:
         channel: https://www.googleapis.com/youtube/v3/channels?key={key}&id={id}&part={part}&maxResults={maxResults}
         videos: https://www.googleapis.com/youtube/v3/search?key={key}&channelId={channelId}&part={part}&type={type}&maxResults={maxResults}
