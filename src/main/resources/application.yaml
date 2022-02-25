@@ -1,0 +1,13 @@
+server:
+  port: 8090
+management:
+  endpoint:
+    health:
+      enabled: true
+youtube:
+  v3:
+    api:
+      key: ${YOUTUBE_API_KEY}
+      urls:
+        channel: https://www.googleapis.com/youtube/v3/channels?key={key}&id={channelId}&part=snippet&maxResults=1
+        videos: https://www.googleapis.com/youtube/v3/search?key={key}&channelId={channelId}&part=snippet&type=video&maxResults=50
