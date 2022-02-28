@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UrlParameters {
     KEY("key"),
-    CHANNEL_ID("channelId");
+    CHANNEL_ID("channelId"),
+    PAGE_TOKEN("pageToken");
 
     private final String key;
 }

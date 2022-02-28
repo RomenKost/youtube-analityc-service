@@ -32,9 +32,11 @@ public class YoutubeAnalyticClient implements AnalyticClient {
     }
 
     @Override
-    public YoutubeV3ApiVideosDto getVideosDto(String id) {
+    public YoutubeV3ApiVideosDto getVideosDto(String id, String pageToken) {
         Map<String, String> urlParameters = getUrlParameters(id);
-        log.info("Loading videosDto for channel with id = " + id + "...");
+        urlParameters.put(UrlParameters.PAGE_TOKEN.getKey(), pageToken);
+
+        log.info("Loading videosDto for channel with id = " + id + ", page token = " + pageToken + "...");
         try {
             YoutubeV3ApiVideosDto videosDto = restTemplate.getForObject(apiVideosUrl, YoutubeV3ApiVideosDto.class, urlParameters);
             log.info("VideosDto for channel with id = " + id + " was loaded.");

@@ -4,7 +4,7 @@ import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChan
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
 
 public interface AnalyticClient {
-    YoutubeV3ApiVideosDto getVideosDto(String id);
+    YoutubeV3ApiVideosDto getVideosDto(String id, String pageToken);
 
     YoutubeV3ApiChannelsDto getChannelsDto(String id);
 }

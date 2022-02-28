@@ -1,6 +1,7 @@
 package com.kostenko.youtube.analytic.service.mapper.youtube.analytic;
 
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
+import com.kostenko.youtube.analytic.service.entity.ChannelEntity;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyticChannelDto;
 import org.mapstruct.DecoratedWith;
@@ -18,11 +19,9 @@ public interface YoutubeChannelMapper {
     @Mapping(target = "publishedAt", expression = "java(channelsDto.getItems()[0].getSnippet().getPublishedAt())")
     Channel youtubeV3ApiChannelsDtoToChannel(YoutubeV3ApiChannelsDto channelsDto);
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "country", source = "country")
-    @Mapping(target = "publishedAt", source = "publishedAt")
     YoutubeAnalyticChannelDto channelToYoutubeAnalyticChannelDto(Channel channel);
-}
 
+    @Mapping(target = "videoEntities", ignore = true)
+    @Mapping(target = "lastCheck", ignore = true)
+    ChannelEntity channelToChannelEntity(Channel channel);
+}

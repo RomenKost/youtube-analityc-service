@@ -1,5 +1,6 @@
 package com.kostenko.youtube.analytic.service.mapper.youtube.analytic;
 
+import com.kostenko.youtube.analytic.service.entity.VideoEntity;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
 import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyticVideoDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
@@ -30,10 +31,12 @@ public interface YoutubeVideoMapper {
     @Mapping(target = "publishedAt", expression ="java(item.getSnippet().getPublishedAt())")
     Video videoItemToVideo(YoutubeV3ApiVideosDto.Item item);
 
-    @Mapping(target = "videoId", source = "videoId")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "publishedAt", source = "publishedAt")
     List<YoutubeAnalyticVideoDto> videosToYoutubeAnalyticVideoDTOs(List<Video> videos);
-}
 
+
+    List<VideoEntity> videosToVideoEntities(List<Video> videos);
+
+    @Mapping(target = "channelId", ignore = true)
+    @Mapping(target = "lastCheck", ignore = true)
+    VideoEntity videoToVideoEntity(Video video);
+}

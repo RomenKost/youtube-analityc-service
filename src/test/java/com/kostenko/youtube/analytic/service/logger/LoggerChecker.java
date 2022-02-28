@@ -21,7 +21,7 @@ public class LoggerChecker {
         assertEquals(expectedMessage, iLoggingEvent.getMessage());
     }
 
-    public void checkErrorLog(Iterator<ILoggingEvent> eventIterator, String expectedMessage, Exception expectedException) {
+    public void checkErrorLog(Iterator<ILoggingEvent> eventIterator, String expectedMessage, Throwable throwable) {
         assertTrue(eventIterator.hasNext());
         ILoggingEvent iLoggingEvent = eventIterator.next();
 
@@ -30,6 +30,6 @@ public class LoggerChecker {
 
         IThrowableProxy iThrowableProxy = iLoggingEvent.getThrowableProxy();
         assertTrue(iThrowableProxy instanceof ThrowableProxy);
-        assertEquals(expectedException, ((ThrowableProxy) iThrowableProxy).getThrowable());
+        assertEquals(throwable, ((ThrowableProxy) iThrowableProxy).getThrowable());
     }
 }

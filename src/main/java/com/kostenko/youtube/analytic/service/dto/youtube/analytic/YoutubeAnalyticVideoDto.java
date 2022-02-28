@@ -1,15 +1,14 @@
 package com.kostenko.youtube.analytic.service.dto.youtube.analytic;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Date;
 
-@Getter
 @Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class YoutubeAnalyticVideoDto {
     @JsonProperty("videoId")
     private String videoId;

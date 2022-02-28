@@ -12,6 +12,9 @@ public class YoutubeV3ApiVideosDto {
     @JsonProperty("items")
     private Item[] items;
 
+    @JsonProperty("nextPageToken")
+    private String nextPageToken;
+
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor

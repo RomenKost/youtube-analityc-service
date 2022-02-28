@@ -7,11 +7,11 @@ import java.util.List;
 
 @UtilityClass
 public class YoutubeAnalyticDto {
-    public List<YoutubeAnalyticVideoDto> getVideos() {
-        YoutubeAnalyticVideoDto firstVideo = getVideo();
+    public List<YoutubeAnalyticVideoDto> getVideoDTOs() {
+        YoutubeAnalyticVideoDto firstVideo = getVideoDto();
         YoutubeAnalyticVideoDto secondVideo = YoutubeAnalyticVideoDto
                 .builder()
-                .videoId("another video id")
+                .videoId("another id")
                 .title("another title")
                 .description("another description")
                 .publishedAt(new Date(1_700_000_000_000L))
@@ -19,7 +19,7 @@ public class YoutubeAnalyticDto {
         return List.of(firstVideo, secondVideo);
     }
 
-    public YoutubeAnalyticChannelDto getChannel() {
+    public YoutubeAnalyticChannelDto getChannelDto() {
         return YoutubeAnalyticChannelDto
                 .builder()
                 .id("any id")
@@ -30,10 +30,10 @@ public class YoutubeAnalyticDto {
                 .build();
     }
 
-    public YoutubeAnalyticVideoDto getVideo() {
+    public YoutubeAnalyticVideoDto getVideoDto() {
         return YoutubeAnalyticVideoDto
                 .builder()
-                .videoId("any video id")
+                .videoId("any id")
                 .title("any title")
                 .description("any description")
                 .publishedAt(new Date(1_600_000_000_000L))
