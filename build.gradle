@@ -29,6 +29,7 @@ dependencies {
     implementation 'javax.persistence:javax.persistence-api:2.2'
 
     implementation 'org.flywaydb:flyway-core:8.5.0'
+    implementation 'io.swagger:swagger-core:2.0.0-rc2'
 
     runtimeOnly 'org.postgresql:postgresql'
 
