@@ -3,6 +3,7 @@ package com.kostenko.youtube.analytic.service.exception.handler;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
 import com.kostenko.youtube.analytic.service.exception.YoutubeServiceUnavailableException;
 import com.kostenko.youtube.analytic.service.logger.LoggerChecker;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,7 +28,7 @@ class DatabaseManagerExceptionHandlerTest {
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeAll
-    void initialize(){
+    void initialize() {
         Logger logger = (Logger) LoggerFactory.getLogger(DatabaseManagerExceptionHandler.class);
         listAppender = new ListAppender<>();
         listAppender.start();
@@ -48,7 +49,26 @@ class DatabaseManagerExceptionHandlerTest {
         exceptionHandler.processThrowable(serviceUnavailableException);
 
         Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
-        LoggerChecker.checkErrorLog(eventIterator, "Request to getting information about channel with id=id wasn't processed.", serviceUnavailableException);
+        LoggerChecker.checkErrorLog(
+                eventIterator,
+                "Request to getting information about channel with id=id wasn't processed. Youtube service is unavailable.",
+                serviceUnavailableException
+        );
+        assertFalse(eventIterator.hasNext());
+    }
+
+    @Test
+    void processYoutubeChannelNotFoundExceptionTest() {
+        YoutubeChannelNotFoundException channelNotFoundException = new YoutubeChannelNotFoundException("any id");
+
+        exceptionHandler.processThrowable(channelNotFoundException);
+
+        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
+        LoggerChecker.checkErrorLog(
+                eventIterator,
+                "Request to getting information about channel with id=any id wasn't processed. Channel with such id wasn't found.",
+                channelNotFoundException
+        );
         assertFalse(eventIterator.hasNext());
     }
 
@@ -59,7 +79,9 @@ class DatabaseManagerExceptionHandlerTest {
         exceptionHandler.processThrowable(throwable);
 
         Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
-        LoggerChecker.checkErrorLog(eventIterator, "Unknown exception was thrown.", throwable);
+        LoggerChecker.checkErrorLog(
+                eventIterator, "Unknown exception was thrown.", throwable
+        );
         assertFalse(eventIterator.hasNext());
     }
 }

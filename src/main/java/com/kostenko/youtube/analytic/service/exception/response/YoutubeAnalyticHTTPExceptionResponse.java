@@ -6,7 +6,10 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 @AllArgsConstructor
-public class YoutubeAnalyticHTTPResponse {
+public class YoutubeAnalyticHTTPExceptionResponse {
     @JsonProperty("message")
     private String message;
+
+    @JsonProperty("channel_id")
+    private String channelId;
 }

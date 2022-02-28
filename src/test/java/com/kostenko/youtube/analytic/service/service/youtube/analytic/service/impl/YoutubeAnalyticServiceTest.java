@@ -6,6 +6,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.V3ApiVideosDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
+import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
 import com.kostenko.youtube.analytic.service.logger.LoggerChecker;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChannelMapper;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
@@ -84,6 +85,24 @@ class YoutubeAnalyticServiceTest {
     }
 
     @Test
+    void getChannelWhenChannelIsNullThrowYoutubeChannelNotFoundExceptionTest() {
+        YoutubeChannelNotFoundException actual = assertThrows(
+                YoutubeChannelNotFoundException.class,
+                () -> service.getChannel("any id")
+        );
+
+        assertEquals("any id", actual.getId());
+        assertEquals("Channel with id = any id wasn't found.", actual.getMessage());
+
+        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
+        LoggerChecker.checkLog(
+                eventIterator, Level.INFO,
+                "Processing request to getting information about channel with id=any id..."
+        );
+        assertFalse(eventIterator.hasNext());
+    }
+
+    @Test
     void getVideosTest() {
         YoutubeV3ApiVideosDto youtubeV3ApiVideosDto = V3ApiVideosDto.getVideoDTOs();
         List<Video> expected = Models.getVideos();
@@ -104,6 +123,27 @@ class YoutubeAnalyticServiceTest {
         LoggerChecker.checkLog(
                 eventIterator, Level.INFO,
                 "Request to getting information about videos of channel with id=any id was processed."
+        );
+        assertFalse(eventIterator.hasNext());
+    }
+
+    @Test
+    void getChannelWhenVideosListIsEmptyThrowYoutubeChannelNotFoundExceptionTest() {
+        Mockito.when(client.getVideosDto("any id", ""))
+                .thenReturn(new YoutubeV3ApiVideosDto());
+
+        YoutubeChannelNotFoundException actual = assertThrows(
+                YoutubeChannelNotFoundException.class,
+                () -> service.getVideos("any id")
+        );
+
+        assertEquals("any id", actual.getId());
+        assertEquals("Channel with id = any id wasn't found.", actual.getMessage());
+
+        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
+        LoggerChecker.checkLog(
+                eventIterator, Level.INFO,
+                "Processing request to getting information about videos of channel with id=any id..."
         );
         assertFalse(eventIterator.hasNext());
     }

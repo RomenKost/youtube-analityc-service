@@ -2,6 +2,7 @@ package com.kostenko.youtube.analytic.service.service.youtube.analytic.service.i
 
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
+import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
@@ -34,8 +35,14 @@ public class YoutubeAnalyticService implements AnalyticService {
     public Channel getChannel(String id) {
         log.info("Processing request to getting information about channel with id=" + id + "...");
         YoutubeV3ApiChannelsDto channelsDto = client.getChannelsDto(id);
+        Channel channel = channelMapper.youtubeV3ApiChannelsDtoToChannel(channelsDto);
+
+        if (channel == null) {
+            throw new YoutubeChannelNotFoundException(id);
+        }
+
         log.info("Request to getting information about channel with id=" + id + " was processed.");
-        return channelMapper.youtubeV3ApiChannelsDtoToChannel(channelsDto);
+        return channel;
     }
 
     @Override
@@ -51,6 +58,10 @@ public class YoutubeAnalyticService implements AnalyticService {
             videos.addAll(videosInPage);
 
             pageToken = videosDto.getNextPageToken();
+        }
+
+        if (videos.isEmpty()) {
+            throw new YoutubeChannelNotFoundException(id);
         }
 
         log.info("Request to getting information about videos of channel with id=" + id + " was processed.");

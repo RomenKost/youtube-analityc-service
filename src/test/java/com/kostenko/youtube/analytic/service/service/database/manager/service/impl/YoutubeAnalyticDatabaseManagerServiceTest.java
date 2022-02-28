@@ -12,17 +12,15 @@ import com.kostenko.youtube.analytic.service.service.youtube.analytic.service.An
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.scheduling.TaskScheduler;
 
 import java.util.List;
 
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.ArgumentMatchers.eq;
 
-@SpringBootTest(classes = YoutubeAnalyticDatabaseManagerService.class)
+@SpringBootTest(classes = YoutubeAnalyticDatabaseManagerServiceTest.class)
 class YoutubeAnalyticDatabaseManagerServiceTest {
     @MockBean
     private DatabaseClient databaseClient;
@@ -32,9 +30,6 @@ class YoutubeAnalyticDatabaseManagerServiceTest {
     private ChannelIdMapper channelIdMapper;
     @MockBean
     private DatabaseManagerExceptionHandler exceptionHandler;
-
-    @Autowired
-    private YoutubeAnalyticDatabaseManagerService databaseManagerService;
 
     @BeforeEach
     void clear() {
@@ -57,7 +52,7 @@ class YoutubeAnalyticDatabaseManagerServiceTest {
         Mockito.when(analyticService.getVideos(or(eq("any id"), eq("another id"))))
                 .thenReturn(videos);
 
-        databaseManagerService.processChannels();
+        getDatabaseManagerService(true).processChannels();
 
         Mockito.verify(databaseClient, Mockito.times(2))
                 .saveReport(channel, videos);
@@ -70,9 +65,27 @@ class YoutubeAnalyticDatabaseManagerServiceTest {
         Mockito.when(databaseClient.getChannelIds())
                 .thenThrow(excepted);
 
-        databaseManagerService.processChannels();
+        getDatabaseManagerService(true).processChannels();
 
         Mockito.verify(exceptionHandler)
                 .processThrowable(excepted);
+    }
+
+    @Test
+    void processChannelsWhenEnabledIsFalse() {
+        getDatabaseManagerService(false).processChannels();
+
+        Mockito.verify(databaseClient, Mockito.times(0))
+                .getChannelIds();
+    }
+
+    private YoutubeAnalyticDatabaseManagerService getDatabaseManagerService(boolean enabled) {
+        return new YoutubeAnalyticDatabaseManagerService(
+                databaseClient,
+                analyticService,
+                channelIdMapper,
+                exceptionHandler,
+                enabled
+        );
     }
 }

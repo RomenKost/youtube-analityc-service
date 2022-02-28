@@ -3,8 +3,9 @@ package com.kostenko.youtube.analytic.service.exception.handler;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
 import com.kostenko.youtube.analytic.service.exception.YoutubeServiceUnavailableException;
-import com.kostenko.youtube.analytic.service.exception.response.YoutubeAnalyticHTTPResponse;
+import com.kostenko.youtube.analytic.service.exception.response.YoutubeAnalyticHTTPExceptionResponse;
 import com.kostenko.youtube.analytic.service.logger.LoggerChecker;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,16 +46,15 @@ class YoutubeAnalyticExceptionHandlerTest {
 
     @Test
     void processYoutubeServiceUnavailableExceptionTest() {
-        ResponseEntity<YoutubeAnalyticHTTPResponse> excepted = new ResponseEntity<>(
-                new YoutubeAnalyticHTTPResponse("Youtube service is unavailable."),
-                HttpStatus.INTERNAL_SERVER_ERROR
+        YoutubeAnalyticHTTPExceptionResponse excepted = new YoutubeAnalyticHTTPExceptionResponse(
+                "Youtube service is unavailable.", "any id"
         );
         YoutubeServiceUnavailableException serviceUnavailableException = new YoutubeServiceUnavailableException(
-                "id", new RestClientException("Rest exception")
+                "any id", new RestClientException("Rest exception")
         );
 
 
-        ResponseEntity<YoutubeAnalyticHTTPResponse> actual = exceptionHandler.processYoutubeServiceUnavailableException(
+        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeServiceUnavailableException(
                 serviceUnavailableException
         );
 
@@ -63,8 +63,31 @@ class YoutubeAnalyticExceptionHandlerTest {
         Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
         LoggerChecker.checkErrorLog(
                 eventIterator,
-                "Request to getting information about channel with id=id wasn't processed.",
+                "Request to getting information about channel with id=any id wasn't processed.",
                 serviceUnavailableException
+        );
+        assertFalse(eventIterator.hasNext());
+    }
+
+    @Test
+    void processYoutubeChannelNotFoundExceptionTest() {
+        YoutubeAnalyticHTTPExceptionResponse excepted = new YoutubeAnalyticHTTPExceptionResponse(
+                "Youtube channel wasn't found.", "any id"
+        );
+        YoutubeChannelNotFoundException channelNotFoundException = new YoutubeChannelNotFoundException("any id");
+
+
+        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeChannelNotFoundException(
+                channelNotFoundException
+        );
+
+        assertEquals(excepted, actual);
+
+        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
+        LoggerChecker.checkErrorLog(
+                eventIterator,
+                "Request to getting information about channel with id=any id wasn't processed.",
+                channelNotFoundException
         );
         assertFalse(eventIterator.hasNext());
     }

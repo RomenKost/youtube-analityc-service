@@ -3,6 +3,8 @@ package com.kostenko.youtube.analytic.service.dto.youtube.analytic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Builder
@@ -10,7 +12,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class YoutubeAnalyticVideoDto {
-    @JsonProperty("videoId")
+    @NotBlank
+    @Size(min = 11, max = 11)
+    @JsonProperty("video_id")
     private String videoId;
 
     @JsonProperty("title")
@@ -19,6 +23,6 @@ public class YoutubeAnalyticVideoDto {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("publishedAt")
+    @JsonProperty("published_at")
     private Date publishedAt;
 }

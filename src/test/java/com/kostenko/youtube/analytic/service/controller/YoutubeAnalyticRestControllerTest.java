@@ -39,7 +39,7 @@ class YoutubeAnalyticRestControllerTest {
         Mockito.when(channelMapper.channelToYoutubeAnalyticChannelDto(Models.getChannel()))
                 .thenReturn(YoutubeAnalyticDto.getChannelDto());
 
-        String expected = new ObjectMapper().writeValueAsString(Models.getChannel())
+        String expected = new ObjectMapper().writeValueAsString(YoutubeAnalyticDto.getChannelDto())
                 .replace("1600000000000", "\"2020-09-13T12:26:40.000+00:00\"");
 
         String actual = mockMvc.perform(
@@ -58,7 +58,7 @@ class YoutubeAnalyticRestControllerTest {
                 .thenReturn(Models.getVideos());
         Mockito.when(videoMapper.videosToYoutubeAnalyticVideoDTOs(Models.getVideos()))
                 .thenReturn(YoutubeAnalyticDto.getVideoDTOs());
-        String expected = new ObjectMapper().writeValueAsString(Models.getVideos())
+        String expected = new ObjectMapper().writeValueAsString(YoutubeAnalyticDto.getVideoDTOs())
                 .replace("1600000000000", "\"2020-09-13T12:26:40.000+00:00\"")
                 .replace("1700000000000", "\"2023-11-14T22:13:20.000+00:00\"");
 

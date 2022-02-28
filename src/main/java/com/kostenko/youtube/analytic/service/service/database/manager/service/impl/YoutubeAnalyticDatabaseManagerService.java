@@ -9,6 +9,7 @@ import com.kostenko.youtube.analytic.service.service.database.manager.client.Dat
 import com.kostenko.youtube.analytic.service.service.database.manager.service.DatabaseManagerService;
 import com.kostenko.youtube.analytic.service.service.youtube.analytic.service.AnalyticService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,24 +22,30 @@ public class YoutubeAnalyticDatabaseManagerService implements DatabaseManagerSer
     private final AnalyticService analyticService;
 
     private final ChannelIdMapper channelIdMapper;
-
     private final DatabaseManagerExceptionHandler exceptionHandler;
+
+    private final boolean processChannelsJobEnabled;
 
     public YoutubeAnalyticDatabaseManagerService(DatabaseClient databaseClient,
                                                  AnalyticService analyticService,
                                                  ChannelIdMapper channelIdMapper,
-                                                 DatabaseManagerExceptionHandler exceptionHandler) {
+                                                 DatabaseManagerExceptionHandler exceptionHandler,
+                                                 @Value("${database.manager.enabled}") boolean processChannelsJobEnable) {
         this.databaseClient = databaseClient;
         this.analyticService = analyticService;
 
         this.channelIdMapper = channelIdMapper;
-
         this.exceptionHandler = exceptionHandler;
+
+        this.processChannelsJobEnabled = processChannelsJobEnable;
     }
 
     @Override
     @Scheduled(fixedDelayString = "${database.manager.delay}")
     public void processChannels() {
+        if (!processChannelsJobEnabled) {
+            return;
+        }
         try {
             log.info("Processing channels...");
 
