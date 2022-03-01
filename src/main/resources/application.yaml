@@ -18,12 +18,12 @@ spring:
     baselineOnMigrate: true
     enabled: true
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   profiles:
-    active: dev
+    active: prod
 springdoc:
   api-docs:
     path: /api-docs
