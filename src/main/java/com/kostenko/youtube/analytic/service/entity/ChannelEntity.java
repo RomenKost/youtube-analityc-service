@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor

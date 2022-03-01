@@ -13,14 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @UtilityClass
 public class LoggerChecker {
-    public void checkLog(Iterator<ILoggingEvent> eventIterator, Level expectedLevel, String expectedMessage) {
-        assertTrue(eventIterator.hasNext());
-        ILoggingEvent iLoggingEvent = eventIterator.next();
-
-        assertEquals(expectedLevel, iLoggingEvent.getLevel());
-        assertEquals(expectedMessage, iLoggingEvent.getMessage());
-    }
-
     public void checkErrorLog(Iterator<ILoggingEvent> eventIterator, String expectedMessage, Throwable throwable) {
         assertTrue(eventIterator.hasNext());
         ILoggingEvent iLoggingEvent = eventIterator.next();

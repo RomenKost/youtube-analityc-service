@@ -17,7 +17,7 @@ public class Models {
 
     public Channel getChannel() {
         return new Channel(
-                "any id", "any title", "any description", "any country", new Date(1_600_000_000_000L)
+                "any id", "any title", "any description", "ac", new Date(1_600_000_000_000L)
         );
     }
 

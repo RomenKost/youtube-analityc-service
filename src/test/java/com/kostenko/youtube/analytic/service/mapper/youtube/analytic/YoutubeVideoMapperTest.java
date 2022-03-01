@@ -166,7 +166,32 @@ class YoutubeVideoMapperTest {
     }
 
     @Test
-    void videosToVideoEntitiesWhenVideosIsEmptyReturnEmptyListTest() {
-        assertTrue(videoMapper.videosToVideoEntities(new ArrayList<>()).isEmpty());
+    void videoEntitiesToVideosTest() {
+        List<Video> expected = Models.getVideos();
+        List<VideoEntity> videoEntities = Entities.getVideoEntities();
+
+        List<Video> actual = videoMapper.videoEntitiesToVideos(videoEntities);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void videoEntitiesToVideosWhenVideosIsEmptyReturnNullTest() {
+        assertNull(videoMapper.videoEntitiesToVideos(null));
+    }
+
+    @Test
+    void videoEntityToVideoTest() {
+        Video expected = Models.getVideo();
+        VideoEntity videoEntity = Entities.getVideoEntity();
+
+        Video actual = videoMapper.videoEntityToVideo(videoEntity);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void videoEntityToVideoWhenEntityIsNullReturnNullTest() {
+        assertNull(videoMapper.videoEntityToVideo(null));
     }
 }

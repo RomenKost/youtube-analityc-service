@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring",  injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 @DecoratedWith(YoutubeVideoDecorator.class)
 public interface YoutubeVideoMapper {
     default List<Video> videoDTOsToVideos(YoutubeV3ApiVideosDto videosDto) {
@@ -25,18 +25,21 @@ public interface YoutubeVideoMapper {
                 .collect(Collectors.toList());
     }
 
-    @Mapping(target = "videoId", expression ="java(item.getId().getVideoId())")
-    @Mapping(target = "title", expression ="java(item.getSnippet().getTitle())")
-    @Mapping(target = "description", expression ="java(item.getSnippet().getDescription())")
-    @Mapping(target = "publishedAt", expression ="java(item.getSnippet().getPublishedAt())")
-    Video videoItemToVideo(YoutubeV3ApiVideosDto.Item item);
-
     List<YoutubeAnalyticVideoDto> videosToYoutubeAnalyticVideoDTOs(List<Video> videos);
 
-
     List<VideoEntity> videosToVideoEntities(List<Video> videos);
+
+    List<Video> videoEntitiesToVideos(List<VideoEntity> videos);
+
+    @Mapping(target = "videoId", expression = "java(item.getId().getVideoId())")
+    @Mapping(target = "title", expression = "java(item.getSnippet().getTitle())")
+    @Mapping(target = "description", expression = "java(item.getSnippet().getDescription())")
+    @Mapping(target = "publishedAt", expression = "java(item.getSnippet().getPublishedAt())")
+    Video videoItemToVideo(YoutubeV3ApiVideosDto.Item item);
 
     @Mapping(target = "channelId", ignore = true)
     @Mapping(target = "lastCheck", ignore = true)
     VideoEntity videoToVideoEntity(Video video);
+
+    Video videoEntityToVideo(VideoEntity video);
 }

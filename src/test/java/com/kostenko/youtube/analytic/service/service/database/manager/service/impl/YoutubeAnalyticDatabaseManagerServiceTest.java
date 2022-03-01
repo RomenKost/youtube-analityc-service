@@ -1,9 +1,7 @@
 package com.kostenko.youtube.analytic.service.service.database.manager.service.impl;
 
-import com.kostenko.youtube.analytic.service.entity.ChannelIdEntity;
-import com.kostenko.youtube.analytic.service.entity.Entities;
+import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
 import com.kostenko.youtube.analytic.service.exception.handler.DatabaseManagerExceptionHandler;
-import com.kostenko.youtube.analytic.service.mapper.database.manager.ChannelIdMapper;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Models;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
@@ -17,6 +15,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -27,26 +27,22 @@ class YoutubeAnalyticDatabaseManagerServiceTest {
     @MockBean
     private AnalyticService analyticService;
     @MockBean
-    private ChannelIdMapper channelIdMapper;
-    @MockBean
     private DatabaseManagerExceptionHandler exceptionHandler;
 
     @BeforeEach
     void clear() {
-        Mockito.reset(databaseClient, analyticService, channelIdMapper, exceptionHandler);
-        Mockito.clearInvocations(databaseClient, analyticService, channelIdMapper, exceptionHandler);
+        Mockito.reset(databaseClient, analyticService, exceptionHandler);
+        Mockito.clearInvocations(databaseClient, analyticService, exceptionHandler);
     }
 
     @Test
     void processChannelsTest() {
-        List<ChannelIdEntity> channelIdEntities = Entities.getChannelIdEntities();
+        List<String> channelIds = List.of("any id", "another id");
         Channel channel = Models.getChannel();
         List<Video> videos = Models.getVideos();
 
         Mockito.when(databaseClient.getChannelIds())
-                .thenReturn(channelIdEntities);
-        Mockito.when(channelIdMapper.channelIdEntitiesToStrings(channelIdEntities))
-                .thenReturn(List.of("any id", "another id"));
+                .thenReturn(channelIds);
         Mockito.when(analyticService.getChannel(or(eq("any id"), eq("another id"))))
                 .thenReturn(channel);
         Mockito.when(analyticService.getVideos(or(eq("any id"), eq("another id"))))
@@ -79,11 +75,62 @@ class YoutubeAnalyticDatabaseManagerServiceTest {
                 .getChannelIds();
     }
 
+    @Test
+    void getChannelsTest() {
+        Channel expected = Models.getChannel();
+        Mockito.when(databaseClient.getChannel("any id"))
+                .thenReturn(expected);
+
+        Channel actual = getDatabaseManagerService(false).getChannel("any id");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getChannelsWhenChannelsIsNullThrowYoutubeChannelNotFoundException() {
+        YoutubeChannelNotFoundException excepted = new YoutubeChannelNotFoundException("any id");
+        YoutubeAnalyticDatabaseManagerService databaseManagerService = getDatabaseManagerService(false);
+
+        YoutubeChannelNotFoundException actual = assertThrows(
+                YoutubeChannelNotFoundException.class,
+                () -> databaseManagerService.getChannel("any id")
+        );
+
+        assertEquals(excepted.getId(), actual.getId());
+        assertEquals(excepted.getMessage(), excepted.getMessage());
+    }
+
+    @Test
+    void getVideosTest() {
+        List<Video> expected = Models.getVideos();
+        Mockito.when(databaseClient.getVideos("any id"))
+                .thenReturn(expected);
+
+        List<Video> actual = getDatabaseManagerService(false).getVideos("any id");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getVideosTestWhenVideosListIsEmptyThrowYoutubeChannelNotFoundException() {
+        YoutubeChannelNotFoundException excepted = new YoutubeChannelNotFoundException("any id");
+        YoutubeAnalyticDatabaseManagerService databaseManagerService = getDatabaseManagerService(false);
+        Mockito.when(databaseClient.getVideos("any id"))
+                .thenReturn(List.of());
+        
+        YoutubeChannelNotFoundException actual = assertThrows(
+                YoutubeChannelNotFoundException.class,
+                () -> databaseManagerService.getVideos("any id")
+        );
+
+        assertEquals(excepted.getId(), actual.getId());
+        assertEquals(excepted.getMessage(), excepted.getMessage());
+    }
+
     private YoutubeAnalyticDatabaseManagerService getDatabaseManagerService(boolean enabled) {
         return new YoutubeAnalyticDatabaseManagerService(
                 databaseClient,
                 analyticService,
-                channelIdMapper,
                 exceptionHandler,
                 enabled
         );

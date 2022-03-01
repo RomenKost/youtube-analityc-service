@@ -1,15 +1,13 @@
 package com.kostenko.youtube.analytic.service.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor

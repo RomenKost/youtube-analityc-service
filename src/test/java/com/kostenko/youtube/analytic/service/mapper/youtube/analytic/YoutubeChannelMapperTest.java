@@ -85,4 +85,19 @@ class YoutubeChannelMapperTest {
     void channelToChannelEntityWhenChannelIsNullReturnNullTest() {
         assertNull(channelMapper.channelToChannelEntity(null));
     }
+
+    @Test
+    void channelEntityToChannelTest() {
+        Channel expected = Models.getChannel();
+        ChannelEntity channelEntity = Entities.getChannelEntity();
+
+        Channel actual = channelMapper.channelEntityToChannel(channelEntity);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void channelEntityToChannelWhenChannelIsNullReturnNullTest() {
+        assertNull(channelMapper.channelEntityToChannel(null));
+    }
 }

@@ -24,4 +24,6 @@ public interface YoutubeChannelMapper {
     @Mapping(target = "videoEntities", ignore = true)
     @Mapping(target = "lastCheck", ignore = true)
     ChannelEntity channelToChannelEntity(Channel channel);
+
+    Channel channelEntityToChannel(ChannelEntity channel);
 }

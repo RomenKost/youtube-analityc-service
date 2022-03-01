@@ -7,7 +7,7 @@ import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChan
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
-import com.kostenko.youtube.analytic.service.service.youtube.analytic.service.AnalyticService;
+import com.kostenko.youtube.analytic.service.service.database.manager.service.DatabaseManagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,15 +22,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/youtube/analytic/v1")
 public class YoutubeAnalyticRestController {
-    private final AnalyticService youtubeService;
+    private final DatabaseManagerService databaseManagerService;
 
     private final YoutubeChannelMapper channelMapper;
     private final YoutubeVideoMapper videoMapper;
 
-    public YoutubeAnalyticRestController(AnalyticService youtubeService,
+    public YoutubeAnalyticRestController(DatabaseManagerService databaseManagerService,
                                          YoutubeChannelMapper channelMapper,
                                          YoutubeVideoMapper videoMapper) {
-        this.youtubeService = youtubeService;
+        this.databaseManagerService = databaseManagerService;
         this.channelMapper = channelMapper;
         this.videoMapper = videoMapper;
     }
@@ -70,7 +70,7 @@ public class YoutubeAnalyticRestController {
             @Parameter(description = "Youtube channel id.")
             @PathVariable("channelId") String id
     ) {
-        Channel channel = youtubeService.getChannel(id);
+        Channel channel = databaseManagerService.getChannel(id);
         return channelMapper.channelToYoutubeAnalyticChannelDto(channel);
     }
 
@@ -111,7 +111,7 @@ public class YoutubeAnalyticRestController {
             @Parameter(description = "Youtube channel id.")
             @PathVariable("channelId") String id
     ) {
-        List<Video> videos = youtubeService.getVideos(id);
+        List<Video> videos = databaseManagerService.getVideos(id);
         return videoMapper.videosToYoutubeAnalyticVideoDTOs(videos);
     }
 }

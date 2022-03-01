@@ -8,4 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ChannelsInfoRepository extends Repository<ChannelEntity, String> {
     @Transactional
     void save(ChannelEntity channelEntity);
+
+    ChannelEntity findById(String id);
 }

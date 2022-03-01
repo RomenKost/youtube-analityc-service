@@ -1,13 +1,8 @@
 package com.kostenko.youtube.analytic.service.service.youtube.analytic.service.impl;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.V3ApiVideosDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
 import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
-import com.kostenko.youtube.analytic.service.logger.LoggerChecker;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChannelMapper;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
@@ -15,17 +10,14 @@ import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Models;
 import com.kostenko.youtube.analytic.service.service.youtube.analytic.client.AnalyticClient;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,20 +35,9 @@ class YoutubeAnalyticServiceTest {
     @Autowired
     private YoutubeAnalyticService service;
 
-    private ListAppender<ILoggingEvent> listAppender;
-
-    @BeforeAll
-    void initialize(){
-        Logger logger = (Logger) LoggerFactory.getLogger(YoutubeAnalyticService.class);
-        listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
-    }
-
     @BeforeEach
     void clear() {
         Mockito.reset(client, videoMapper, channelMapper);
-        listAppender.list.clear();
     }
 
     @Test
@@ -71,17 +52,6 @@ class YoutubeAnalyticServiceTest {
 
         Channel actual = service.getChannel("any id");
         assertEquals(expected, actual);
-
-        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
-        LoggerChecker.checkLog(
-                eventIterator, Level.INFO,
-                "Processing request to getting information about channel with id=any id..."
-        );
-        LoggerChecker.checkLog(
-                eventIterator, Level.INFO,
-                "Request to getting information about channel with id=any id was processed."
-        );
-        assertFalse(eventIterator.hasNext());
     }
 
     @Test
@@ -93,13 +63,6 @@ class YoutubeAnalyticServiceTest {
 
         assertEquals("any id", actual.getId());
         assertEquals("Channel with id = any id wasn't found.", actual.getMessage());
-
-        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
-        LoggerChecker.checkLog(
-                eventIterator, Level.INFO,
-                "Processing request to getting information about channel with id=any id..."
-        );
-        assertFalse(eventIterator.hasNext());
     }
 
     @Test
@@ -114,17 +77,6 @@ class YoutubeAnalyticServiceTest {
 
         List<Video> actual = service.getVideos("any id");
         assertEquals(expected, actual);
-
-        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
-        LoggerChecker.checkLog(
-                eventIterator, Level.INFO,
-                "Processing request to getting information about videos of channel with id=any id..."
-        );
-        LoggerChecker.checkLog(
-                eventIterator, Level.INFO,
-                "Request to getting information about videos of channel with id=any id was processed."
-        );
-        assertFalse(eventIterator.hasNext());
     }
 
     @Test
@@ -139,12 +91,5 @@ class YoutubeAnalyticServiceTest {
 
         assertEquals("any id", actual.getId());
         assertEquals("Channel with id = any id wasn't found.", actual.getMessage());
-
-        Iterator<ILoggingEvent> eventIterator = listAppender.list.iterator();
-        LoggerChecker.checkLog(
-                eventIterator, Level.INFO,
-                "Processing request to getting information about videos of channel with id=any id..."
-        );
-        assertFalse(eventIterator.hasNext());
     }
 }

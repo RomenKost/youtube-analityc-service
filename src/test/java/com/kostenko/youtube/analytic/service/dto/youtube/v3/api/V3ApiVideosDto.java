@@ -18,7 +18,7 @@ public class V3ApiVideosDto {
 
     public YoutubeV3ApiChannelsDto getChannelDto() {
         YoutubeV3ApiChannelsDto.Item.Snippet snippet = new YoutubeV3ApiChannelsDto.Item.Snippet(
-                "any title", "any description", "any country", new Date(1_600_000_000_000L)
+                "any title", "any description", "ac", new Date(1_600_000_000_000L)
         );
         YoutubeV3ApiChannelsDto.Item item = new YoutubeV3ApiChannelsDto.Item("any id", snippet);
         return new YoutubeV3ApiChannelsDto(new YoutubeV3ApiChannelsDto.Item[]{item});

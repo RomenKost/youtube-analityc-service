@@ -18,9 +18,12 @@ spring:
     baselineOnMigrate: true
     enabled: true
   jpa:
+    show-sql: true
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  profiles:
+    active: dev
 springdoc:
   api-docs:
     path: /api-docs
@@ -35,5 +38,5 @@ youtube:
         videos: https://www.googleapis.com/youtube/v3/search?key={key}&channelId={channelId}&part=snippet&type=video&maxResults=50&pageToken={pageToken}
 database:
   manager:
-    delay: 10000
+    delay: 100000
     enabled: false

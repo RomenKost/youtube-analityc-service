@@ -25,7 +25,7 @@ public class YoutubeAnalyticDto {
                 .id("any id")
                 .title("any title")
                 .description("any description")
-                .country("any country")
+                .country("ac")
                 .publishedAt(new Date(1_600_000_000_000L))
                 .build();
     }
