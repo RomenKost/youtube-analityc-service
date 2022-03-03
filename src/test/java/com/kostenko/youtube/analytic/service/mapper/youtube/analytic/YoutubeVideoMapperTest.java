@@ -2,7 +2,7 @@ package com.kostenko.youtube.analytic.service.mapper.youtube.analytic;
 
 import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyticDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyticVideoDto;
-import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.V3ApiVideosDto;
+import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiDTOs;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
 import com.kostenko.youtube.analytic.service.entity.Entities;
 import com.kostenko.youtube.analytic.service.entity.VideoEntity;
@@ -29,7 +29,7 @@ class YoutubeVideoMapperTest {
     @Test
     void videoDTOsToVideosTest() {
         List<Video> expected = Models.getVideos();
-        YoutubeV3ApiVideosDto videosDto = V3ApiVideosDto.getVideoDTOs();
+        YoutubeV3ApiVideosDto videosDto = YoutubeV3ApiDTOs.getVideoDTOs();
         List<Video> actual = videoMapper.videoDTOsToVideos(videosDto);
 
         assertEquals(expected, actual);
@@ -54,7 +54,7 @@ class YoutubeVideoMapperTest {
 
     @Test
     void videoDTOsToVideosWhenDtoItemHasNotSnippetReturnListWithoutThisMappedItemTest() {
-        YoutubeV3ApiVideosDto.Item firstVideo = V3ApiVideosDto.getVideoDtoItem();
+        YoutubeV3ApiVideosDto.Item firstVideo = YoutubeV3ApiDTOs.getVideoDtoItem();
         YoutubeV3ApiVideosDto.Item secondVideo = new YoutubeV3ApiVideosDto.Item(
                 new YoutubeV3ApiVideosDto.Item.Id(), null
         );
@@ -68,7 +68,7 @@ class YoutubeVideoMapperTest {
 
     @Test
     void videoDTOsToVideosWhenDtoItemHasNotIdReturnListWithoutThisMappedDtoItemTest() {
-        YoutubeV3ApiVideosDto.Item firstVideo = V3ApiVideosDto.getVideoDtoItem();
+        YoutubeV3ApiVideosDto.Item firstVideo = YoutubeV3ApiDTOs.getVideoDtoItem();
         YoutubeV3ApiVideosDto.Item secondVideo = new YoutubeV3ApiVideosDto.Item(
                 null, new YoutubeV3ApiVideosDto.Item.Snippet()
         );
@@ -83,7 +83,7 @@ class YoutubeVideoMapperTest {
     @Test
     void videoItemToVideoTest() {
         Video expected = Models.getVideo();
-        YoutubeV3ApiVideosDto.Item item = V3ApiVideosDto.getVideoDtoItem();
+        YoutubeV3ApiVideosDto.Item item = YoutubeV3ApiDTOs.getVideoDtoItem();
         Video actual = videoMapper.videoItemToVideo(item);
 
         assertEquals(expected, actual);

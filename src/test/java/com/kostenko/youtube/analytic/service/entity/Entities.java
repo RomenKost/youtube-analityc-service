@@ -9,35 +9,46 @@ import java.util.List;
 public class Entities {
     public List<VideoEntity> getVideoEntities() {
         VideoEntity firstEntity = getVideoEntity();
-        VideoEntity secondEntity = VideoEntity.builder()
-                .publishedAt(new Date(1_700_000_000_000L))
-                .description("another description")
-                .title("another title")
-                .videoId("another id")
-                .build();
+        VideoEntity secondEntity = new VideoEntity();
+
+        secondEntity.setPublishedAt(new Date(1_700_000_000_000L));
+        secondEntity.setDescription("another description");
+        secondEntity.setTitle("another title");
+        secondEntity.setVideoId("another id");
+
         return List.of(firstEntity, secondEntity);
     }
 
     public ChannelEntity getChannelEntity() {
-        return ChannelEntity.builder()
-                .publishedAt(new Date(1_600_000_000_000L))
-                .description("any description")
-                .title("any title")
-                .country("ac")
-                .id("any id")
-                .build();
+        ChannelEntity channelEntity = new ChannelEntity();
+
+        channelEntity.setPublishedAt(new Date(1_600_000_000_000L));
+        channelEntity.setDescription("any description");
+        channelEntity.setTitle("any title");
+        channelEntity.setCountry("ac");
+        channelEntity.setId("any id");
+
+        return channelEntity;
     }
 
     public VideoEntity getVideoEntity() {
-        return VideoEntity.builder()
-                .publishedAt(new Date(1_600_000_000_000L))
-                .description("any description")
-                .title("any title")
-                .videoId("any id")
-                .build();
+        VideoEntity videoEntity = new VideoEntity();
+
+        videoEntity.setPublishedAt(new Date(1_600_000_000_000L));
+        videoEntity.setDescription("any description");
+        videoEntity.setTitle("any title");
+        videoEntity.setVideoId("any id");
+
+        return videoEntity;
     }
 
     public List<ChannelIdEntity> getChannelIdEntities() {
-        return List.of(new ChannelIdEntity("any id"), new ChannelIdEntity("another id"));
+        ChannelIdEntity firstChannelIdEntity = new ChannelIdEntity();
+        ChannelIdEntity secondChannelIdEntity = new ChannelIdEntity();
+
+        firstChannelIdEntity.setId("any id");
+        secondChannelIdEntity.setId("another id");
+
+        return List.of(firstChannelIdEntity, secondChannelIdEntity);
     }
 }

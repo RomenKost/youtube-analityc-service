@@ -9,8 +9,6 @@ import java.util.Date;
 
 @Builder
 @EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public class YoutubeAnalyticVideoDto {
     @NotBlank
     @Size(min = 11, max = 11)

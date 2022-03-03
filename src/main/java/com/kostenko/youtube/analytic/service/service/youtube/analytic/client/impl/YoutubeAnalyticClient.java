@@ -2,7 +2,10 @@ package com.kostenko.youtube.analytic.service.service.youtube.analytic.client.im
 
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
-import com.kostenko.youtube.analytic.service.exception.YoutubeServiceUnavailableException;
+import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChannelMapper;
+import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
 import com.kostenko.youtube.analytic.service.service.youtube.analytic.client.AnalyticClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,46 +19,76 @@ import java.util.*;
 @Service
 public class YoutubeAnalyticClient implements AnalyticClient {
     private final RestTemplate restTemplate;
+    private final YoutubeChannelMapper channelMapper;
+    private final YoutubeVideoMapper videoMapper;
 
     private final String apiKey;
     private final String apiChannelUrl;
     private final String apiVideosUrl;
 
     public YoutubeAnalyticClient(RestTemplate restTemplate,
+                                 YoutubeChannelMapper channelMapper,
+                                 YoutubeVideoMapper videoMapper,
                                  @Value("${youtube.v3.api.key}") String apiKey,
                                  @Value("${youtube.v3.api.urls.channel}") String apiChannelUrl,
                                  @Value("${youtube.v3.api.urls.videos}") String apiVideosUrl) {
         this.restTemplate = restTemplate;
+        this.channelMapper = channelMapper;
+        this.videoMapper = videoMapper;
+
         this.apiKey = apiKey;
         this.apiChannelUrl = apiChannelUrl;
         this.apiVideosUrl = apiVideosUrl;
     }
 
     @Override
-    public YoutubeV3ApiVideosDto getVideosDto(String id, String pageToken) {
+    public List<Video> getVideos(String id, String pageToken) {
         Map<String, String> urlParameters = getUrlParameters(id);
         urlParameters.put(UrlParameters.PAGE_TOKEN.getKey(), pageToken);
 
         log.info("Loading videosDto for channel with id = " + id + ", page token = " + pageToken + "...");
+
+        List<Video> videos = new ArrayList<>();
         try {
             YoutubeV3ApiVideosDto videosDto = restTemplate.getForObject(apiVideosUrl, YoutubeV3ApiVideosDto.class, urlParameters);
-            log.info("VideosDto for channel with id = " + id + " was loaded.");
-            return videosDto;
+            videos.addAll(videoMapper.videoDTOsToVideos(videosDto));
+            pageToken = videosDto == null ? null : videosDto.getNextPageToken();
         } catch (RestClientException restClientException) {
-            throw new YoutubeServiceUnavailableException(id, restClientException);
+            log.error("Youtube analytic service is unavailable.", restClientException);
+            return List.of();
         }
+
+        if (videos.isEmpty()) {
+            log.warn("Videos for channel with id = " + id + " wasn't found.");
+        } else {
+            log.info("VideosDto for channel with id = " + id + " was loaded.");
+        }
+
+        if (pageToken != null) {
+            videos.addAll(getVideos(id, pageToken));
+        }
+        return videos;
     }
 
     @Override
-    public YoutubeV3ApiChannelsDto getChannelsDto(String id) {
+    public Optional<Channel> getChannel(String id) {
         Map<String, String> urlParameters = getUrlParameters(id);
         log.info("Loading channelsDto for channel with id = " + id + "...");
+
         try {
             YoutubeV3ApiChannelsDto channelsDto = restTemplate.getForObject(apiChannelUrl, YoutubeV3ApiChannelsDto.class, urlParameters);
-            log.info("ChannelsDto for channel with id = " + id + " was loaded.");
-            return channelsDto;
+            Channel channel = channelMapper.youtubeV3ApiChannelsDtoToChannel(channelsDto);
+
+            if (channel == null) {
+                log.warn("Channel with id = " + id + " wasn't found.");
+            } else {
+                log.info("ChannelsDto for channel with id = " + id + " was loaded.");
+            }
+
+            return Optional.ofNullable(channel);
         } catch (RestClientException restClientException) {
-            throw new YoutubeServiceUnavailableException(id, restClientException);
+            log.error("Youtube analytic service is unavailable.", restClientException);
+            return Optional.empty();
         }
     }
 

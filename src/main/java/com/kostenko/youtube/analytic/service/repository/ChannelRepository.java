@@ -1,9 +1,10 @@
 package com.kostenko.youtube.analytic.service.repository;
 
 import com.kostenko.youtube.analytic.service.entity.ChannelIdEntity;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-@org.springframework.stereotype.Repository
-public interface ChannelRepository extends Repository<ChannelIdEntity, String> {
-    Iterable<ChannelIdEntity> findAll();
+@Repository
+public interface ChannelRepository extends CrudRepository<ChannelIdEntity, String> {
+
 }

@@ -1,9 +1,13 @@
 package com.kostenko.youtube.analytic.service.service.youtube.analytic.client.impl;
 
-import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.V3ApiVideosDto;
+import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiDTOs;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
-import com.kostenko.youtube.analytic.service.exception.YoutubeServiceUnavailableException;
+import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChannelMapper;
+import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Models;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,7 +19,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,6 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class YoutubeClientTest {
     @MockBean
     private RestTemplate restTemplate;
+    @MockBean
+    private YoutubeChannelMapper channelMapper;
+    @MockBean
+    private YoutubeVideoMapper videoMapper;
+
     @Autowired
     private YoutubeAnalyticClient client;
 
@@ -33,62 +44,69 @@ class YoutubeClientTest {
     }
 
     @Test
-    void getChannelsDtoTest() {
-        YoutubeV3ApiChannelsDto expected = V3ApiVideosDto.getChannelDto();
-        Mockito.when(restTemplate.getForObject("channels_url", YoutubeV3ApiChannelsDto.class, getUrlsParameters()))
-                .thenReturn(expected);
-        YoutubeV3ApiChannelsDto actual = client.getChannelsDto("channel_id");
+    void getChannelTest() {
+        Channel expected = Models.getChannel();
+        YoutubeV3ApiChannelsDto v3ApiChannelsDto = YoutubeV3ApiDTOs.getChannelDto();
 
-        assertEquals(expected, actual);
+        Mockito.when(restTemplate.getForObject("channels_url", YoutubeV3ApiChannelsDto.class, getUrlsParameters()))
+                .thenReturn(v3ApiChannelsDto);
+        Mockito.when(channelMapper.youtubeV3ApiChannelsDtoToChannel(v3ApiChannelsDto))
+                .thenReturn(expected);
+        Optional<Channel> actual = client.getChannel("channel_id");
+
+        assertTrue(actual.isPresent());
+        assertEquals(expected, actual.get());
     }
 
     @Test
     void getYoutubeVideoDtoTest() {
-        YoutubeV3ApiVideosDto expected = V3ApiVideosDto.getVideoDTOs();
+        List<Video> excepted = Models.getVideos();
+        YoutubeV3ApiVideosDto v3ApiVideosDto = YoutubeV3ApiDTOs.getVideoDTOs();
+
         Map<String, String> parameters = getUrlsParameters();
         parameters.put("pageToken", "token");
 
         Mockito.when(restTemplate.getForObject("videos_url", YoutubeV3ApiVideosDto.class, parameters))
-                .thenReturn(expected);
-        YoutubeV3ApiVideosDto actual = client.getVideosDto("channel_id", "token");
+                .thenReturn(v3ApiVideosDto);
+        Mockito.when(videoMapper.videoDTOsToVideos(v3ApiVideosDto))
+                .thenReturn(excepted);
+        List<Video> actual = client.getVideos("channel_id", "token");
 
-        assertEquals(expected, actual);
+        assertEquals(excepted, actual);
     }
 
     @Test
-    void getChannelsDtoDisconnectedClientTest() {
-        YoutubeServiceUnavailableException expected = new YoutubeServiceUnavailableException(
-                "channel_id", new RestClientException("Server disconnected.")
-        );
-
+    void getChannelsDtoWhenRestTemplateDisconnectsReturnEmptyOptionalTest() {
         Mockito.when(restTemplate.getForObject("channels_url", YoutubeV3ApiChannelsDto.class, getUrlsParameters()))
-                .thenThrow(expected);
+                .thenThrow(new RestClientException(""));
 
-        YoutubeServiceUnavailableException actual = assertThrows(
-                YoutubeServiceUnavailableException.class,
-                () -> client.getChannelsDto("channel_id")
-        );
+        Optional<Channel> actual = client.getChannel("channel_id");
 
-        assertEquals(expected, actual);
+        assertTrue(actual.isEmpty());
     }
 
     @Test
-    void getVideosDtoDisconnectedClientTest() {
-        YoutubeServiceUnavailableException expected = new YoutubeServiceUnavailableException(
-                "channel_id", new RestClientException("Server disconnected.")
-        );
-
+    void getVideosDtoWhenRestTemplateDisconnectsReturnEmptyListTest() {
         Map<String, String> parameters = getUrlsParameters();
         parameters.put("pageToken", "token");
+
         Mockito.when(restTemplate.getForObject("videos_url", YoutubeV3ApiVideosDto.class, parameters))
-                .thenThrow(expected);
+                .thenThrow(new RestClientException(""));
+        List<Video> actual = client.getVideos("channel_id", "token");
 
-        YoutubeServiceUnavailableException actual = assertThrows(
-                YoutubeServiceUnavailableException.class,
-                () -> client.getVideosDto("channel_id", "token")
-        );
+        assertTrue(actual.isEmpty());
+    }
 
-        assertEquals(expected, actual);
+    @Test
+    void getChannelsDtoWhenChannelsWasNotFoundReturnEmptyOptionalTest() {
+        Optional<Channel> actual = client.getChannel("channel_id");
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void getVideosDtoWhenRestTemplateDisconnectsReturnEmptyOptionalTest() {
+        List<Video> actual = client.getVideos("channel_id", "token");
+        assertTrue(actual.isEmpty());
     }
 
     private Map<String, String> getUrlsParameters() {

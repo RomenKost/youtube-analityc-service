@@ -6,4 +6,5 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({DatabaseManagerConfiguration.class, YoutubeAnalyticConfiguration.class})
 public class ApplicationConfiguration {
+
 }

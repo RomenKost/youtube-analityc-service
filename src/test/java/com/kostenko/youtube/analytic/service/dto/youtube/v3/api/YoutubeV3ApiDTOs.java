@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Date;
 
 @UtilityClass
-public class V3ApiVideosDto {
+public class YoutubeV3ApiDTOs {
     public YoutubeV3ApiVideosDto getVideoDTOs() {
         YoutubeV3ApiVideosDto.Item.Id secondVideoId = new YoutubeV3ApiVideosDto.Item.Id("another id");
         YoutubeV3ApiVideosDto.Item.Snippet secondVideoSnippet = new YoutubeV3ApiVideosDto.Item.Snippet(

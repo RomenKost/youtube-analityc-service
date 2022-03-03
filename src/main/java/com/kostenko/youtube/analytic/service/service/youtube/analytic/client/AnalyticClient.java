@@ -1,10 +1,13 @@
 package com.kostenko.youtube.analytic.service.service.youtube.analytic.client;
 
-import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
-import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiVideosDto;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
+import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface AnalyticClient {
-    YoutubeV3ApiVideosDto getVideosDto(String id, String pageToken);
+    List<Video> getVideos(String id, String pageToken);
 
-    YoutubeV3ApiChannelsDto getChannelsDto(String id);
+    Optional<Channel> getChannel(String id);
 }

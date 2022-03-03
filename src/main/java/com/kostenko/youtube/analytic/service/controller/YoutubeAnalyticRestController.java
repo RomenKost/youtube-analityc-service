@@ -7,7 +7,7 @@ import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChan
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
-import com.kostenko.youtube.analytic.service.service.database.manager.service.DatabaseManagerService;
+import com.kostenko.youtube.analytic.service.service.database.reader.client.DatabaseReaderClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,26 +15,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/youtube/analytic/v1")
 public class YoutubeAnalyticRestController {
-    private final DatabaseManagerService databaseManagerService;
+    private final DatabaseReaderClient databaseReaderClient;
 
     private final YoutubeChannelMapper channelMapper;
     private final YoutubeVideoMapper videoMapper;
-
-    public YoutubeAnalyticRestController(DatabaseManagerService databaseManagerService,
-                                         YoutubeChannelMapper channelMapper,
-                                         YoutubeVideoMapper videoMapper) {
-        this.databaseManagerService = databaseManagerService;
-        this.channelMapper = channelMapper;
-        this.videoMapper = videoMapper;
-    }
-
 
     @Operation(summary = "Get an youtube channel information by id.")
     @ApiResponses(value = {
@@ -55,14 +48,6 @@ public class YoutubeAnalyticRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = YoutubeAnalyticHTTPExceptionResponse.class)
                     )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Youtube analytic service is unavailable.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = YoutubeAnalyticHTTPExceptionResponse.class)
-                    )
             )
     })
     @GetMapping("/channels/{channelId}")
@@ -70,10 +55,9 @@ public class YoutubeAnalyticRestController {
             @Parameter(description = "Youtube channel id.")
             @PathVariable("channelId") String id
     ) {
-        Channel channel = databaseManagerService.getChannel(id);
+        Channel channel = databaseReaderClient.getChannel(id);
         return channelMapper.channelToYoutubeAnalyticChannelDto(channel);
     }
-
 
     @Operation(summary = "Get youtube videos information by channel id.")
     @ApiResponses(value = {
@@ -91,15 +75,7 @@ public class YoutubeAnalyticRestController {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Channel with passed id wasn't found.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = YoutubeAnalyticHTTPExceptionResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Youtube analytic service is unavailable.",
+                    description = "Videos of channel with passed id wasn't found.",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = YoutubeAnalyticHTTPExceptionResponse.class)
@@ -111,7 +87,7 @@ public class YoutubeAnalyticRestController {
             @Parameter(description = "Youtube channel id.")
             @PathVariable("channelId") String id
     ) {
-        List<Video> videos = databaseManagerService.getVideos(id);
+        List<Video> videos = databaseReaderClient.getVideos(id);
         return videoMapper.videosToYoutubeAnalyticVideoDTOs(videos);
     }
 }

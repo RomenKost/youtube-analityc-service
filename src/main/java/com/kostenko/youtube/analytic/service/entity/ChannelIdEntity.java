@@ -1,8 +1,6 @@
 package com.kostenko.youtube.analytic.service.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,10 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Objects;
 
-@Getter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "channel")
 public class ChannelIdEntity {
     @Id

@@ -1,13 +1,12 @@
 package com.kostenko.youtube.analytic.service.exception.handler;
 
 import com.kostenko.youtube.analytic.service.exception.YoutubeChannelNotFoundException;
-import com.kostenko.youtube.analytic.service.exception.YoutubeServiceUnavailableException;
+import com.kostenko.youtube.analytic.service.exception.YoutubeVideosNotFoundException;
 import com.kostenko.youtube.analytic.service.exception.response.YoutubeAnalyticHTTPExceptionResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestClientException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,17 +17,19 @@ class YoutubeAnalyticExceptionHandlerTest {
     private YoutubeAnalyticExceptionHandler exceptionHandler;
 
     @Test
-    void processYoutubeServiceUnavailableExceptionTest() {
-        YoutubeAnalyticHTTPExceptionResponse excepted = new YoutubeAnalyticHTTPExceptionResponse(
-                "Youtube service is unavailable.", "any id"
-        );
-        YoutubeServiceUnavailableException serviceUnavailableException = new YoutubeServiceUnavailableException(
-                "any id", new RestClientException("Rest exception")
-        );
+    void processYoutubeVideosNotFoundExceptionTest() {
+        YoutubeAnalyticHTTPExceptionResponse excepted = YoutubeAnalyticHTTPExceptionResponse
+                .builder()
+                .message("Videos weren't found.")
+                .channelId("any id")
+                .exceptionClassName(YoutubeVideosNotFoundException.class.getSimpleName())
+                .build();
+
+        YoutubeVideosNotFoundException youtubeVideosNotFoundException = new YoutubeVideosNotFoundException("any id");
 
 
-        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeServiceUnavailableException(
-                serviceUnavailableException
+        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeVideosNotFoundException(
+                youtubeVideosNotFoundException
         );
 
         assertEquals(excepted, actual);
@@ -36,11 +37,14 @@ class YoutubeAnalyticExceptionHandlerTest {
 
     @Test
     void processYoutubeChannelNotFoundExceptionTest() {
-        YoutubeAnalyticHTTPExceptionResponse excepted = new YoutubeAnalyticHTTPExceptionResponse(
-                "Youtube channel wasn't found.", "any id"
-        );
-        YoutubeChannelNotFoundException channelNotFoundException = new YoutubeChannelNotFoundException("any id");
+        YoutubeAnalyticHTTPExceptionResponse excepted = YoutubeAnalyticHTTPExceptionResponse
+                .builder()
+                .message("Channel wasn't found.")
+                .channelId("any id")
+                .exceptionClassName(YoutubeChannelNotFoundException.class.getSimpleName())
+                .build();
 
+        YoutubeChannelNotFoundException channelNotFoundException = new YoutubeChannelNotFoundException("any id");
 
         YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeChannelNotFoundException(
                 channelNotFoundException

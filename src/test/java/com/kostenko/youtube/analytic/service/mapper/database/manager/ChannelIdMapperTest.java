@@ -1,5 +1,6 @@
 package com.kostenko.youtube.analytic.service.mapper.database.manager;
 
+import com.kostenko.youtube.analytic.service.entity.ChannelEntity;
 import com.kostenko.youtube.analytic.service.entity.ChannelIdEntity;
 import com.kostenko.youtube.analytic.service.entity.Entities;
 import org.junit.jupiter.api.Test;
@@ -30,5 +31,15 @@ class ChannelIdMapperTest {
     @Test
     void channelIdEntitiesToStringsWhenListIsNullReturnEmptyListTest() {
         assertTrue(channelIdMapper.channelIdEntitiesToStrings(null).isEmpty());
+    }
+
+    @Test
+    void stringToChannelEntity() {
+        ChannelEntity expected = new ChannelEntity();
+        expected.setId("any id");
+
+        ChannelEntity actual = channelIdMapper.stringToChannelEntity("any id");
+
+        assertEquals(expected, actual);
     }
 }

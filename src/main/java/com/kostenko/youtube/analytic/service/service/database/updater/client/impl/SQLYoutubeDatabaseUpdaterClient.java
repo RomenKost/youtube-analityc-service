@@ -1,4 +1,4 @@
-package com.kostenko.youtube.analytic.service.service.database.manager.client.impl;
+package com.kostenko.youtube.analytic.service.service.database.updater.client.impl;
 
 import com.kostenko.youtube.analytic.service.entity.ChannelEntity;
 import com.kostenko.youtube.analytic.service.entity.ChannelIdEntity;
@@ -10,41 +10,23 @@ import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
 import com.kostenko.youtube.analytic.service.repository.ChannelRepository;
 import com.kostenko.youtube.analytic.service.repository.ChannelsInfoRepository;
-import com.kostenko.youtube.analytic.service.repository.VideoRepository;
-import com.kostenko.youtube.analytic.service.service.database.manager.client.DatabaseClient;
+import com.kostenko.youtube.analytic.service.service.database.updater.client.DatabaseUpdaterClient;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
-public class SQLDatabaseClient implements DatabaseClient {
+@AllArgsConstructor
+public class SQLYoutubeDatabaseUpdaterClient implements DatabaseUpdaterClient {
     private final ChannelsInfoRepository channelsInfoRepository;
     private final ChannelRepository channelRepository;
-    private final VideoRepository videoRepository;
 
-    private final ChannelIdMapper channelIdMapper;
     private final YoutubeChannelMapper channelMapper;
     private final YoutubeVideoMapper videoMapper;
-
-    public SQLDatabaseClient(ChannelRepository channelRepository,
-                             ChannelsInfoRepository channelsInfoRepository,
-                             VideoRepository videoRepository,
-
-                             ChannelIdMapper channelIdMapper,
-                             YoutubeChannelMapper channelMapper,
-                             YoutubeVideoMapper videoMapper) {
-        this.channelRepository = channelRepository;
-        this.channelsInfoRepository = channelsInfoRepository;
-        this.videoRepository = videoRepository;
-
-        this.channelIdMapper = channelIdMapper;
-        this.channelMapper = channelMapper;
-        this.videoMapper = videoMapper;
-    }
+    private final ChannelIdMapper channelIdMapper;
 
     @Override
     public List<String> getChannelIds() {
@@ -67,18 +49,5 @@ public class SQLDatabaseClient implements DatabaseClient {
 
         channelsInfoRepository.save(channelEntity);
         log.info("Report was saved to the database (id = " + channel.getId() + ", videos count: " + videos.size() + ").");
-    }
-
-    @Override
-    public Channel getChannel(String id) {
-        ChannelEntity channelEntity = channelsInfoRepository.findById(id);
-        return channelMapper.channelEntityToChannel(channelEntity);
-    }
-
-    @Override
-    public List<Video> getVideos(String channelId) {
-        ChannelEntity channelEntity = channelsInfoRepository.findById(channelId);
-        List<VideoEntity> videoEntities = videoRepository.findAllByChannelId(channelEntity);
-        return videoMapper.videoEntitiesToVideos(videoEntities);
     }
 }

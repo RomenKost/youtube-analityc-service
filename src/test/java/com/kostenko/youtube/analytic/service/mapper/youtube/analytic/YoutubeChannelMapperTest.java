@@ -2,7 +2,7 @@ package com.kostenko.youtube.analytic.service.mapper.youtube.analytic;
 
 import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyticChannelDto;
 import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyticDto;
-import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.V3ApiVideosDto;
+import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiDTOs;
 import com.kostenko.youtube.analytic.service.dto.youtube.v3.api.YoutubeV3ApiChannelsDto;
 import com.kostenko.youtube.analytic.service.entity.ChannelEntity;
 import com.kostenko.youtube.analytic.service.entity.Entities;
@@ -24,7 +24,7 @@ class YoutubeChannelMapperTest {
     @Test
     void youtubeV3ApiChannelsDtoDtoToChannelTest() {
         Channel expected = Models.getChannel();
-        YoutubeV3ApiChannelsDto channelsDto = V3ApiVideosDto.getChannelDto();
+        YoutubeV3ApiChannelsDto channelsDto = YoutubeV3ApiDTOs.getChannelDto();
 
         Channel actual = channelMapper.youtubeV3ApiChannelsDtoToChannel(channelsDto);
 

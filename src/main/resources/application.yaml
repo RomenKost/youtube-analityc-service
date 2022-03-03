@@ -23,7 +23,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   profiles:
-    active: prod
+    active: dev
 springdoc:
   api-docs:
     path: /api-docs
@@ -39,4 +39,4 @@ youtube:
 database:
   manager:
     delay: 100000
-    enabled: false
+    enabled: true

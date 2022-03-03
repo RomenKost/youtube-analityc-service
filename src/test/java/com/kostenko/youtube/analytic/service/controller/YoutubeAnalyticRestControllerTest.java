@@ -5,7 +5,7 @@ import com.kostenko.youtube.analytic.service.dto.youtube.analytic.YoutubeAnalyti
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChannelMapper;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Models;
-import com.kostenko.youtube.analytic.service.service.database.manager.service.DatabaseManagerService;
+import com.kostenko.youtube.analytic.service.service.database.reader.client.DatabaseReaderClient;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,7 +23,7 @@ class YoutubeAnalyticRestControllerTest {
     @Value("${server.port}")
     private int port;
     @MockBean
-    private DatabaseManagerService databaseManagerService;
+    private DatabaseReaderClient databaseReaderClient;
     @MockBean
     private YoutubeChannelMapper channelMapper;
     @MockBean
@@ -34,7 +34,7 @@ class YoutubeAnalyticRestControllerTest {
 
     @Test
     void getChannelTest() throws Exception {
-        Mockito.when(databaseManagerService.getChannel("any_id"))
+        Mockito.when(databaseReaderClient.getChannel("any_id"))
                 .thenReturn(Models.getChannel());
         Mockito.when(channelMapper.channelToYoutubeAnalyticChannelDto(Models.getChannel()))
                 .thenReturn(YoutubeAnalyticDto.getChannelDto());
@@ -54,7 +54,7 @@ class YoutubeAnalyticRestControllerTest {
 
     @Test
     void getVideosTest() throws Exception {
-        Mockito.when(databaseManagerService.getVideos("any_id"))
+        Mockito.when(databaseReaderClient.getVideos("any_id"))
                 .thenReturn(Models.getVideos());
         Mockito.when(videoMapper.videosToYoutubeAnalyticVideoDTOs(Models.getVideos()))
                 .thenReturn(YoutubeAnalyticDto.getVideoDTOs());

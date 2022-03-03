@@ -1,4 +1,4 @@
-package com.kostenko.youtube.analytic.service.service.database.manager.client.impl;
+package com.kostenko.youtube.analytic.service.service.database.updater.client.impl;
 
 import com.kostenko.youtube.analytic.service.entity.ChannelEntity;
 import com.kostenko.youtube.analytic.service.entity.ChannelIdEntity;
@@ -7,12 +7,10 @@ import com.kostenko.youtube.analytic.service.entity.VideoEntity;
 import com.kostenko.youtube.analytic.service.mapper.database.manager.ChannelIdMapper;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeChannelMapper;
 import com.kostenko.youtube.analytic.service.mapper.youtube.analytic.YoutubeVideoMapper;
-import com.kostenko.youtube.analytic.service.model.youtube.analytic.Channel;
 import com.kostenko.youtube.analytic.service.model.youtube.analytic.Models;
-import com.kostenko.youtube.analytic.service.model.youtube.analytic.Video;
 import com.kostenko.youtube.analytic.service.repository.ChannelRepository;
 import com.kostenko.youtube.analytic.service.repository.ChannelsInfoRepository;
-import com.kostenko.youtube.analytic.service.repository.VideoRepository;
+import com.kostenko.youtube.analytic.service.repository.VideosInfoRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +22,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = SQLDatabaseClient.class)
-class SQLDatabaseClientTest {
+@SpringBootTest(classes = SQLYoutubeDatabaseUpdaterClient.class)
+class SQLYoutubeDatabaseUpdaterClientTest {
     @MockBean
     private ChannelsInfoRepository channelsInfoRepository;
     @MockBean
     private ChannelRepository channelRepository;
     @MockBean
-    private VideoRepository videoRepository;
+    private VideosInfoRepository videosInfoRepository;
 
     @MockBean
     private ChannelIdMapper channelIdMapper;
@@ -41,7 +39,7 @@ class SQLDatabaseClientTest {
     private YoutubeVideoMapper videoMapper;
 
     @Autowired
-    private SQLDatabaseClient databaseClient;
+    private SQLYoutubeDatabaseUpdaterClient databaseClient;
 
     @Test
     void getChannelIdsTest() {
@@ -73,37 +71,5 @@ class SQLDatabaseClientTest {
         databaseClient.saveReport(Models.getChannel(), Models.getVideos());
 
         Mockito.verify(channelsInfoRepository).save(expected);
-    }
-
-
-    @Test
-    void getChannelTest() {
-        Channel expected = Models.getChannel();
-        ChannelEntity channelEntity = Entities.getChannelEntity();
-        Mockito.when(channelsInfoRepository.findById("any id"))
-                .thenReturn(channelEntity);
-        Mockito.when(channelMapper.channelEntityToChannel(channelEntity))
-                .thenReturn(expected);
-
-        Channel actual = databaseClient.getChannel("any id");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getVideosTest() {
-        List<Video> expected = Models.getVideos();
-        ChannelEntity channelEntity = Entities.getChannelEntity();
-        List<VideoEntity> videoEntities = Entities.getVideoEntities();
-        Mockito.when(channelsInfoRepository.findById("any id"))
-                .thenReturn(channelEntity);
-        Mockito.when(videoRepository.findAllByChannelId(channelEntity))
-                .thenReturn(videoEntities);
-        Mockito.when(videoMapper.videoEntitiesToVideos(videoEntities))
-                .thenReturn(expected);
-
-        List<Video> actual = databaseClient.getVideos("any id");
-
-        assertEquals(expected, actual);
     }
 }

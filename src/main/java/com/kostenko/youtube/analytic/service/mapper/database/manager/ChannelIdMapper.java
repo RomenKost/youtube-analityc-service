@@ -1,5 +1,6 @@
 package com.kostenko.youtube.analytic.service.mapper.database.manager;
 
+import com.kostenko.youtube.analytic.service.entity.ChannelEntity;
 import com.kostenko.youtube.analytic.service.entity.ChannelIdEntity;
 import org.mapstruct.Mapper;
 
@@ -13,5 +14,11 @@ public interface ChannelIdMapper {
                 : channelIdEntities.stream()
                 .map(ChannelIdEntity::getId)
                 .collect(Collectors.toList());
+    }
+
+    default ChannelEntity stringToChannelEntity(String channelId) {
+        ChannelEntity channelEntity = new ChannelEntity();
+        channelEntity.setId(channelId);
+        return channelEntity;
     }
 }
