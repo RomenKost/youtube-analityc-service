@@ -27,7 +27,7 @@
     </appender>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="com.kostenko.youtube.analytic.service.logback.RestTemplateFilter" />
+        <filter class="com.kostenko.youtube.analytic.logback.RestTemplateFilter" />
         <encoder>
             <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
         </encoder>
