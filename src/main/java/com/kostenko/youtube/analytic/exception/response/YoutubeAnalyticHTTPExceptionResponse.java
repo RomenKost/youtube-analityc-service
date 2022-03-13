@@ -3,10 +3,12 @@ package com.kostenko.youtube.analytic.exception.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Date;
 
 @Builder
+@ToString
 @EqualsAndHashCode
 public class YoutubeAnalyticHTTPExceptionResponse {
     @JsonProperty("message")

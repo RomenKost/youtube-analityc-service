@@ -36,7 +36,11 @@ youtube:
       urls:
         channel: https://www.googleapis.com/youtube/v3/channels?key={key}&id={channelId}&part=snippet&maxResults=1
         videos: https://www.googleapis.com/youtube/v3/search?key={key}&channelId={channelId}&part=snippet&type=video&maxResults=50&pageToken={pageToken}
-database:
-  manager:
-    delay: 100000
-    enabled: true
+  analytic:
+    collector:
+      delay: 100000
+      enabled: true
+    security:
+      jwt:
+        key: ${YOUTUBE_SECURITY_SECRET_KEY}
+        expiration: 1000000000

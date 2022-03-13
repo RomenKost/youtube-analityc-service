@@ -1,7 +1,7 @@
 package com.kostenko.youtube.analytic.exception.handler;
 
-import com.kostenko.youtube.analytic.exception.YoutubeChannelNotFoundException;
-import com.kostenko.youtube.analytic.exception.YoutubeVideosNotFoundException;
+import com.kostenko.youtube.analytic.exception.youtube.YoutubeChannelNotFoundException;
+import com.kostenko.youtube.analytic.exception.youtube.YoutubeVideosNotFoundException;
 import com.kostenko.youtube.analytic.exception.response.YoutubeAnalyticHTTPExceptionResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,7 +20,7 @@ class YoutubeAnalyticExceptionHandlerTest {
     void processYoutubeVideosNotFoundExceptionTest() {
         YoutubeAnalyticHTTPExceptionResponse excepted = YoutubeAnalyticHTTPExceptionResponse
                 .builder()
-                .message("Videos weren't found.")
+                .message("Videos of channel with id = any id weren't found.")
                 .channelId("any id")
                 .exceptionClassName(YoutubeVideosNotFoundException.class.getSimpleName())
                 .build();
@@ -28,7 +28,7 @@ class YoutubeAnalyticExceptionHandlerTest {
         YoutubeVideosNotFoundException youtubeVideosNotFoundException = new YoutubeVideosNotFoundException("any id");
 
 
-        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeVideosNotFoundException(
+        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.handleYoutubeVideosNotFoundException(
                 youtubeVideosNotFoundException
         );
 
@@ -39,14 +39,14 @@ class YoutubeAnalyticExceptionHandlerTest {
     void processYoutubeChannelNotFoundExceptionTest() {
         YoutubeAnalyticHTTPExceptionResponse excepted = YoutubeAnalyticHTTPExceptionResponse
                 .builder()
-                .message("Channel wasn't found.")
+                .message("Channel with id = any id wasn't found.")
                 .channelId("any id")
                 .exceptionClassName(YoutubeChannelNotFoundException.class.getSimpleName())
                 .build();
 
         YoutubeChannelNotFoundException channelNotFoundException = new YoutubeChannelNotFoundException("any id");
 
-        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.processYoutubeChannelNotFoundException(
+        YoutubeAnalyticHTTPExceptionResponse actual = exceptionHandler.handleYoutubeChannelNotFoundException(
                 channelNotFoundException
         );
 

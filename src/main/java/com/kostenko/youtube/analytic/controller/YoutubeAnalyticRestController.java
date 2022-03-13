@@ -2,12 +2,14 @@ package com.kostenko.youtube.analytic.controller;
 
 import com.kostenko.youtube.analytic.dto.youtube.analytic.YoutubeAnalyticChannelDto;
 import com.kostenko.youtube.analytic.dto.youtube.analytic.YoutubeAnalyticVideoDto;
+import com.kostenko.youtube.analytic.exception.response.YoutubeAnalyticAccountHTTPExceptionResponse;
 import com.kostenko.youtube.analytic.exception.response.YoutubeAnalyticHTTPExceptionResponse;
-import com.kostenko.youtube.analytic.mapper.channel.YoutubeChannelMapper;
-import com.kostenko.youtube.analytic.mapper.video.YoutubeVideoMapper;
-import com.kostenko.youtube.analytic.model.Channel;
-import com.kostenko.youtube.analytic.model.Video;
-import com.kostenko.youtube.analytic.service.procesor.YoutubeAnalyticDataProcessor;
+import com.kostenko.youtube.analytic.exception.response.YoutubeAnalyticJwtHTTPExceptionResponse;
+import com.kostenko.youtube.analytic.mapper.youtube.channel.YoutubeChannelMapper;
+import com.kostenko.youtube.analytic.mapper.youtube.video.YoutubeVideoMapper;
+import com.kostenko.youtube.analytic.model.youtube.Channel;
+import com.kostenko.youtube.analytic.model.youtube.Video;
+import com.kostenko.youtube.analytic.service.youtube.procesor.YoutubeAnalyticDataProcessor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -42,6 +44,14 @@ public class YoutubeAnalyticRestController {
                     }
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "JWT is incorrect.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = YoutubeAnalyticJwtHTTPExceptionResponse.class)
+                    )
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "Channel with passed id wasn't found.",
                     content = @Content(
@@ -64,14 +74,21 @@ public class YoutubeAnalyticRestController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Videos were loaded successfully.",
-                    content = {
-                            @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(
-                                            schema = @Schema(implementation = YoutubeAnalyticVideoDto.class)
-                                    )
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = YoutubeAnalyticVideoDto.class)
                             )
-                    }
+                    )
+
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "JWT is incorrect.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = YoutubeAnalyticJwtHTTPExceptionResponse.class)
+                    )
             ),
             @ApiResponse(
                     responseCode = "404",

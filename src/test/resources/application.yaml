@@ -1,5 +1,3 @@
-server:
-  port: 8099
 youtube:
   v3:
     api:
@@ -7,6 +5,10 @@ youtube:
       urls:
         channel: channels_url
         videos: videos_url
-database:
-  manager:
-    delay: 12345
+  analytic:
+    collector:
+      delay: 100000
+      enabled: false
+    security:
+      jwt:
+        key: secret_key

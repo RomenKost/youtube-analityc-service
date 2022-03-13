@@ -1,9 +1,18 @@
 package com.kostenko.youtube.analytic.entity;
 
+import com.kostenko.youtube.analytic.entity.security.UserEntity;
+import com.kostenko.youtube.analytic.entity.youtube.ChannelEntity;
+import com.kostenko.youtube.analytic.entity.youtube.ChannelIdEntity;
+import com.kostenko.youtube.analytic.entity.youtube.VideoEntity;
+import com.kostenko.youtube.analytic.service.security.user.YoutubeAnalyticUserStatus;
+import com.kostenko.youtube.analytic.service.security.user.YoutubeAnalyticUserRole;
 import lombok.experimental.UtilityClass;
 
 import java.util.Date;
 import java.util.List;
+
+import static com.kostenko.youtube.analytic.service.security.user.YoutubeAnalyticUserStatus.*;
+import static com.kostenko.youtube.analytic.service.security.user.YoutubeAnalyticUserRole.*;
 
 @UtilityClass
 public class Entities {
@@ -50,5 +59,16 @@ public class Entities {
         secondChannelIdEntity.setId("another id");
 
         return List.of(firstChannelIdEntity, secondChannelIdEntity);
+    }
+
+    public UserEntity getUserEntity(YoutubeAnalyticUserRole userRole, YoutubeAnalyticUserStatus userStatus) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("any username");
+        userEntity.setPassword("any hashed password");
+        userEntity.setRole(userRole);
+        userEntity.setStatus(userStatus);
+        userEntity.setCreated(new Date(1_600_000_000_000L));
+        userEntity.setUpdated(new Date(1_700_000_000_000L));
+        return userEntity;
     }
 }
