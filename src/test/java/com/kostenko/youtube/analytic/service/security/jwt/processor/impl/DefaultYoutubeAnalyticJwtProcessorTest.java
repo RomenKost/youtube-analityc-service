@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class DefaultYoutubeAnalyticJwtProcessorTest {
+class DefaultYoutubeAnalyticJwtProcessorTest {
     private YoutubeAnalyticUserProcessor userProcessor;
     private DefaultYoutubeAnalyticJwtProcessor jwtProcessor;
 

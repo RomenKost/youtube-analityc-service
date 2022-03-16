@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = DefaultYoutubeAnalyticUserProcessor.class)
-public class DefaultYoutubeAnalyticUserProcessorTest {
+class DefaultYoutubeAnalyticUserProcessorTest {
     @MockBean
     private UsersRepository usersRepository;
     @MockBean

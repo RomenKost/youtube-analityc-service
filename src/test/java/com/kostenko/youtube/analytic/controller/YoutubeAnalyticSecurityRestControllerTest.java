@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = YoutubeAnalyticSecurityRestController.class)
-public class YoutubeAnalyticSecurityRestControllerTest {
+class YoutubeAnalyticSecurityRestControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean

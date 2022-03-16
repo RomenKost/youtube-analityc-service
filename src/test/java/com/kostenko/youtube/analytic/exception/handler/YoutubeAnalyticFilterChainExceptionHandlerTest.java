@@ -24,7 +24,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @SpringBootTest(classes = YoutubeAnalyticFilterChainExceptionHandler.class)
-public class YoutubeAnalyticFilterChainExceptionHandlerTest {
+class YoutubeAnalyticFilterChainExceptionHandlerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired

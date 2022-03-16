@@ -39,8 +39,8 @@ youtube:
   analytic:
     collector:
       delay: 100000
-      enabled: true
+      enabled: false
     security:
       jwt:
         key: ${YOUTUBE_SECURITY_SECRET_KEY}
-        expiration: 1000000000
+        expiration: 5000

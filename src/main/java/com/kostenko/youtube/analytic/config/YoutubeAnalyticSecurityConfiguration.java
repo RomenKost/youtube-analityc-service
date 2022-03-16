@@ -5,7 +5,6 @@ import com.kostenko.youtube.analytic.security.filter.YoutubeAnalyticJwtTokenVeri
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,6 +12,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import static com.kostenko.youtube.analytic.service.security.user.YoutubeAnalyticUserPermission.*;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.*;
 
 @Configuration
@@ -34,11 +35,13 @@ public class YoutubeAnalyticSecurityConfiguration extends WebSecurityConfigurerA
                 .addFilterBefore(jwtTokenVerifier(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(youtubeAnalyticFilterChainExceptionHandler(), LogoutFilter.class)
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/actuator/health", "/youtube/analytic/v1/login")
+                    .antMatchers(GET, "/actuator/health")
                         .permitAll()
-                    .antMatchers(HttpMethod.GET, "/youtube/analytic/v1/channels/*")
+                    .antMatchers(POST, "/youtube/analytic/v1/login")
+                        .permitAll()
+                    .antMatchers(GET, "/youtube/analytic/v1/channels/*")
                         .hasAuthority(FIND_CHANNELS.name())
-                    .antMatchers(HttpMethod.GET, "/youtube/analytic/v1/channels/*/videos")
+                    .antMatchers(GET, "/youtube/analytic/v1/channels/*/videos")
                         .hasAuthority(FIND_VIDEOS.name())
                     .anyRequest().denyAll()
                     .and();
