@@ -1,14 +1,10 @@
 package com.kostenko.youtube.analytic.model.youtube;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@EqualsAndHashCode
-@AllArgsConstructor
+@Data
 public class Video {
     private String videoId;
     private String title;

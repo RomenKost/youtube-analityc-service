@@ -1,6 +1,6 @@
 package com.kostenko.youtube.analytic.repository.security;
 
-import com.kostenko.youtube.analytic.entity.security.UserEntity;
+import com.kostenko.youtube.analytic.repository.security.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

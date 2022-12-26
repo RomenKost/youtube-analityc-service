@@ -7,8 +7,9 @@ youtube:
         videos: videos_url
   analytic:
     collector:
-      delay: 100000
+      cron: 1 1 1 1 1 *
       enabled: false
     security:
       jwt:
         key: secret_key
+        expiration: 3000
