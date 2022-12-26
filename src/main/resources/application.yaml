@@ -7,15 +7,15 @@ management:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    platform: postgresql
+    url: ${DB_YA_URL:jdbc:postgresql://${DB_YA_HOST:localhost}:${DB_YA_PORT:5432}/${DB_YA_DATABASE:postgres}?currentSchema=${DB_YA_SCHEMA:youtube_analytic}}
+    username: ${DB_YA_USERNAME:postgres}
+    password: ${DB_YA_PASSWORD:admin}
   flyway:
-    url: ${DATABASE_URL}
-    user: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: ${DB_YA_URL:jdbc:postgresql://${DB_YA_HOST:localhost}:${DB_YA_PORT:5432}/${DB_YA_DATABASE:postgres}}
+    user: ${DB_YA_USERNAME:postgres}
+    password: ${DB_YA_PASSWORD:admin}
     baselineOnMigrate: true
+    schemas: [ '${DB_YA_SCHEMA:youtube_analytic}' ]
     enabled: true
   jpa:
     show-sql: false
@@ -26,17 +26,21 @@ spring:
     active: dev
 springdoc:
   api-docs:
-    path: /api-docs
+    path: youtube/analitic/documentation
   swagger-ui:
-    path: swagger-ui-custom.html
+    path: youtube/analitic/documentation.html
 youtube:
   v3:
     api:
       key: ${YOUTUBE_API_KEY}
       urls:
         channel: https://www.googleapis.com/youtube/v3/channels?key={key}&id={channelId}&part=snippet&maxResults=1
-        videos: https://www.googleapis.com/youtube/v3/search?key={key}&channelId={channelId}&part=snippet&type=video&maxResults=50&pageToken={pageToken}
-database:
-  manager:
-    delay: 100000
-    enabled: true
+        videos: https://www.googleapis.com/youtube/v3/search?key={key}&channelId={channelId}&part=snippet&type=video&maxResults=500&pageToken={pageToken}
+  analytic:
+    collector:
+      cron: 0 0 * * * *
+      enabled: true
+    security:
+      jwt:
+        key: ${YOUTUBE_SECURITY_SECRET_KEY}
+        expiration: 300000
